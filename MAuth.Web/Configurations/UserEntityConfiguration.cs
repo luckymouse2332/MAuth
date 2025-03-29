@@ -1,8 +1,8 @@
-﻿using MAuth.Web.Data.Entity;
+﻿using MAuth.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace MAuth.Web.Data.EntityConfigurations
+namespace MAuth.Web.Configurations
 {
     public class UserEntityConfiguration : IEntityTypeConfiguration<User>
     {

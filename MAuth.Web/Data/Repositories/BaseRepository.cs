@@ -1,8 +1,8 @@
 ﻿using MAuth.Web.Data;
-using MAuth.Web.Data.Entity;
+using MAuth.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace MAuth.Web.Repositories
+namespace MAuth.Web.Data.Repositories
 {
     public class BaseRepository<TEntity>(MAuthDbContext dbContext) : IBaseRepository<TEntity>
         where TEntity : BaseEntity

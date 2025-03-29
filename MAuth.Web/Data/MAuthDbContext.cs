@@ -1,11 +1,11 @@
-﻿using MAuth.Web.Data.Entity;
-using MAuth.Web.Data.EntityConfigurations;
+﻿using MAuth.Web.Configurations;
+using MAuth.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace MAuth.Web.Data
 {
-    public class MAuthDbContext(DbContextOptions<MAuthDbContext> options, IHttpContextAccessor httpContextAccessor) : DbContext(options)
+    public class MAuthDbContext(DbContextOptions<MAuthDbContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
 
@@ -46,7 +46,6 @@ namespace MAuth.Web.Data
 
         private void HandleEntityChanges()
         {
-            var currentUsername = httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "System";
             var entries = ChangeTracker.Entries<BaseEntity>();
 
             foreach (var entry in entries)
@@ -59,7 +58,13 @@ namespace MAuth.Web.Data
                 if (entry.State == EntityState.Modified)
                 {
                     entry.Entity.ModificationTime = DateTime.UtcNow;
-                    entry.Entity.Modifier = currentUsername;
+                }
+
+                if (entry.State == EntityState.Deleted)
+                {
+                    entry.State = EntityState.Modified;
+                    entry.Entity.IsDeleted = true;
+                    entry.Entity.DeletedTime = DateTime.UtcNow;
                 }
             }
         }

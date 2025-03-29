@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MAuth.Web.Data.Entity
+namespace MAuth.Web.Data.Entities
 {
     public class BaseEntity
     {

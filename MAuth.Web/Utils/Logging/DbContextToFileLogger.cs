@@ -6,13 +6,12 @@ namespace MAuth.Web.Utils.Logging
 
     public class DbContextToFileLogger
     {
-
         /// <summary>
         /// 日志文件名称
         /// </summary>
         private readonly string _fileName =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                "LogFiles", $"{Now.Year}-{Now.Month}-{Now.Day}", $"EF_Log.txt");
+                "LogFiles", $"{Now.Year}-{Now.Month}-{Now.Day}", $"EF_Log.log");
 
         /// <summary>
         /// 覆盖默认的文件名和路径

@@ -1,59 +1,64 @@
 using MAuth.Web.Data;
-using MAuth.Web.Data.Interceptors;
+using MAuth.Web.Data.Extensions;
+using MAuth.Web.Mappings;
 using MAuth.Web.Utils.Logging;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace MAuth.Web;
-
-public class Program
+namespace MAuth.Web
 {
-    public static void Main(string[] args)
+    public class Program
     {
-        var builder = WebApplication.CreateBuilder(args);
-
-        if (builder.Environment.IsDevelopment())
+        public static void Main(string[] args)
         {
-            SetupLogging.Development();
-            builder.Services.SensitiveDataLoggingConnection(builder);
+            var builder = WebApplication.CreateBuilder(args);
+
+            if (builder.Environment.IsDevelopment())
+            {
+                SetupLogging.Development();
+                builder.Services.SensitiveDataLoggingConnection(builder);
+            }
+            else
+            {
+                SetupLogging.Production();
+                builder.Services.ProductionLoggingConnection(builder);
+            }
+
+            builder.Host.UseSerilog();
+
+            builder.Services.AddControllers();
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContextFactory<MAuthDbContext>(options =>
+            {
+                var connectionString = 
+                    builder.Configuration.GetConnectionString("DefaultConnection");
+                options.UseNpgsql(connectionString);
+            });
+
+
+            builder.Services.AddRepositories();
+
+            builder.Services.AddAutoMapper(typeof(UserMapperProfile).Assembly);
+
+            var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseRouting();
+
+            app.MapControllers();
+
+            app.Run();
         }
-        else
-        {
-            SetupLogging.Production();
-            builder.Services.ProductionLoggingConnection(builder);
-        }
-
-        builder.Host.UseSerilog();
-
-        builder.Services.AddControllers();
-
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        builder.Services.AddSingleton<SoftDeleteInterceptor>();
-
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
-
-        builder.Services.AddDbContext<MAuthDbContext>((serviceProvider, options) =>
-        {
-            options.UseNpgsql(connectionString)
-                .AddInterceptors(
-                    serviceProvider.GetRequiredService<SoftDeleteInterceptor>());
-        });
-
-        var app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
-        app.UseAuthorization();
-
-        app.MapControllers();
-
-        app.Run();
     }
 }
-

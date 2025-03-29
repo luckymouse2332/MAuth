@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MAuth.Web.Data.Entity
+namespace MAuth.Web.Data.Entities
 {
     public class User : BaseEntity
     {
