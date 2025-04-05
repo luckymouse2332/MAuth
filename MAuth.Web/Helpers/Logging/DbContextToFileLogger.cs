@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace MAuth.Web.Utils.Logging
+namespace MAuth.Web.Helpers.Logging
 {
     using static System.DateTime;
 

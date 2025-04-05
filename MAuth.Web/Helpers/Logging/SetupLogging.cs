@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace MAuth.Web.Utils.Logging;
+namespace MAuth.Web.Helpers.Logging;
 
 public static class SetupLogging
 {

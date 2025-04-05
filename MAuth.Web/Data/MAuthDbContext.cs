@@ -1,5 +1,5 @@
 ﻿using MAuth.Web.Configurations;
-using MAuth.Web.Data.Entities;
+using MAuth.Web.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -11,7 +11,10 @@ namespace MAuth.Web.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserEntityConfiguration).Assembly);
+            
             // 软删除：自动过滤 IsDeleted == true 的数据
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -21,7 +24,6 @@ namespace MAuth.Web.Data
                         .HasQueryFilter(ConvertFilterExpression(entityType.ClrType));
                 }
             }
-            base.OnModelCreating(modelBuilder);
         }
 
         private static LambdaExpression ConvertFilterExpression(Type entityType)

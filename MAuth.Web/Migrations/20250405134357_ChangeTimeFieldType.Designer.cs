@@ -3,6 +3,7 @@ using System;
 using MAuth.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MAuth.Web.Migrations
 {
     [DbContext(typeof(MAuthDbContext))]
-    partial class MAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250405134357_ChangeTimeFieldType")]
+    partial class ChangeTimeFieldType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,16 +31,16 @@ namespace MAuth.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("CreationTime")
+                    b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTimeOffset>("DeletedTime")
+                    b.Property<DateTime>("DeletedTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("ModificationTime")
+                    b.Property<DateTime?>("ModificationTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Modifier")

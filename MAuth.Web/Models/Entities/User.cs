@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MAuth.Web.Data.Entities
+namespace MAuth.Web.Models.Entities
 {
     public class User : BaseEntity
     {
@@ -17,13 +17,13 @@ namespace MAuth.Web.Data.Entities
 
     public enum UserStatus
     {
-        ACTIVE,
-        BANNED
+        Active,
+        Banned
     }
 
     public enum UserRole
     {
-        ADMIN,
-        USER
+        Admin,
+        User
     }
 }

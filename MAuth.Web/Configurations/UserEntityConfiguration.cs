@@ -1,4 +1,4 @@
-﻿using MAuth.Web.Data.Entities;
+﻿using MAuth.Web.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

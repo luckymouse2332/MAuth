@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MAuth.Web.Data;
 
-namespace MAuth.Web.Utils.Logging
+namespace MAuth.Web.Helpers.Logging
 {
     public static class DbContexts
     {

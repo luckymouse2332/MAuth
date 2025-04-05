@@ -1,5 +1,5 @@
-﻿using MAuth.Web.Data;
-using MAuth.Web.Data.Entities;
+﻿using MAuth.Web.Models.Entities;
+using MAuth.Web.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace MAuth.Web.Data.Repositories
@@ -16,8 +16,7 @@ namespace MAuth.Web.Data.Repositories
 
             if (count != 1)
             {
-                // TODO: 抛出一个异常，表示更新失败
-                return;
+                throw new CustomException(500, $"添加数据失败，修改了{count}行数据！");
             }
             return;
         }
@@ -29,8 +28,7 @@ namespace MAuth.Web.Data.Repositories
 
             if (count != 1)
             {
-                // TODO: 抛出一个异常，表示更新失败
-                return;
+                throw new CustomException(500, $"删除数据失败，影响了{count}行数据！");
             }
             return;
         }
@@ -52,10 +50,49 @@ namespace MAuth.Web.Data.Repositories
 
             if (count != 1)
             {
-                // TODO: 抛出一个异常，表示更新失败
-                return;
+                throw new CustomException(500, $"更新数据失败，影响了{count}行数据！");
             }
             return;
+        }
+
+        public async Task<bool> ExistsAsync(Guid id)
+        {
+            return await dbContext.Set<TEntity>().AnyAsync(x => x.Id == id);
+        }
+    }
+
+    /// <summary>
+    /// 用于自动扫描并注册仓储
+    /// </summary>
+    public static class RepositoryExtensions
+    {
+        /// <summary>
+        /// 自动扫描并注册仓储
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddRepositories(this IServiceCollection services)
+        {
+            var assembly = typeof(BaseRepository<>).Assembly;
+            var baseInterfaceType = typeof(IBaseRepository<>);
+            var repositoryInterfaces = assembly.GetTypes()
+                .Where(t => t.IsInterface
+                         && t != baseInterfaceType
+                         && t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == baseInterfaceType));
+
+            foreach (var repositoryInterface in repositoryInterfaces)
+            {
+                // 获取到实现了这个接口的类
+                var repositoryType = assembly.GetTypes()
+                    .FirstOrDefault(t => repositoryInterface.IsAssignableFrom(t)
+                        && t is { IsClass: true, IsAbstract: false });
+                if (repositoryType is not null)
+                {
+                    services.AddScoped(repositoryInterface, repositoryType);
+                }
+            }
+
+            return services;
         }
     }
 }

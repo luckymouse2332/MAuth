@@ -1,4 +1,4 @@
-﻿using MAuth.Web.Data.Entities;
+﻿using MAuth.Web.Models.Entities;
 
 namespace MAuth.Web.Data.Repositories
 {
@@ -13,5 +13,7 @@ namespace MAuth.Web.Data.Repositories
         Task UpdateAsync(TEntity entity);
 
         Task DeleteAsync(TEntity entity);
+
+        Task<bool> ExistsAsync(Guid id);
     }
 }
