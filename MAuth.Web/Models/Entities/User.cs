@@ -4,7 +4,7 @@ namespace MAuth.Web.Models.Entities
 {
     public class User : BaseEntity
     {
-        [Required, MaxLength(50)]
+        [Required, MaxLength(255)]
         public string Username { get; set; } = string.Empty;
 
         [Required, MaxLength(512)]
@@ -13,6 +13,8 @@ namespace MAuth.Web.Models.Entities
         public UserStatus Status { get; set; }
 
         public UserRole Role { get; set; }
+
+        public IEnumerable<PlayerEntity> Players { get; set; } = [];
     }
 
     public enum UserStatus

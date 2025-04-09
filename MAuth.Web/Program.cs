@@ -18,6 +18,7 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using System.Text;
 using MAuth.Web.Models.Entities;
+using Microsoft.OpenApi.Models;
 
 namespace MAuth.Web
 {
@@ -73,18 +74,46 @@ namespace MAuth.Web
             });
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "MAuth WebAPI", Version = "v1" });
+
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                options.AddSecurityDefinition("Bearer", securitySchema);
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    { securitySchema, ["Bearer"] }
+                };
+                options.AddSecurityRequirement(securityRequirement);
+            });
 
             builder.Services.AddDbContextFactory<MAuthDbContext>(options =>
             {
                 var connectionString =
-                    builder.Configuration.GetConnectionString("DefaultConnection");
+                    builder.Configuration.GetConnectionString("PostgresConnection");
                 options.UseNpgsql(connectionString);
             });
 
             builder.Services.AddRepositories();
 
-            builder.Services.AddAutoMapper(typeof(UserMapperProfile).Assembly);
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = 
+                    builder.Configuration.GetConnectionString("RedisConnection");
+            });
 
             // JWT身份认证功能配置
             // 从配置文件中读取JWT相关配置
@@ -97,7 +126,8 @@ namespace MAuth.Web
             string privateKeyPath = Path.Combine(builder.Environment.ContentRootPath, "Rsa", "key.private.json");
             string publicKeyPath = Path.Combine(builder.Environment.ContentRootPath, "Rsa", "key.public.json");
 
-            if (!File.Exists(privateKeyPath) || !Path.Exists(publicKeyPath)) // 判断是否需要重新生成密钥文件
+            if (!File.Exists(privateKeyPath) 
+                || !Path.Exists(publicKeyPath)) // 判断是否需要重新生成密钥文件
             {
                 JwtKeyHelper.GenerateKey(builder.Environment);
             }
@@ -148,10 +178,10 @@ namespace MAuth.Web
 
             builder.Services.AddScoped<IAuthService, AuthService>();
 
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Admin", policy => policy.RequireRole(UserRole.Admin.ToString()));
-            });
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("Admin", policy => policy.RequireRole(UserRole.Admin.ToString()));
+
+            builder.Services.AddAutoMapper(typeof(UserMapperProfile).Assembly);
 
             var app = builder.Build();
 
@@ -163,10 +193,10 @@ namespace MAuth.Web
 
             app.UseGlobalExceptionHandler();
 
+            app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseRouting();
 
             app.MapControllers();
 

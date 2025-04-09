@@ -23,7 +23,7 @@ namespace MAuth.Web.Services
                 context.Token = authorization["Bearer ".Length..].Trim();
             }
 
-            if (string.IsNullOrEmpty(context.Token))
+            if (string.IsNullOrWhiteSpace(context.Token))
             {
                 context.NoResult();
                 return Task.CompletedTask;

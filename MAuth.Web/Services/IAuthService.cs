@@ -1,4 +1,5 @@
 ﻿using MAuth.Web.Models.DTOs;
+using System.Security.Claims;
 
 namespace MAuth.Web.Services
 {
@@ -13,7 +14,7 @@ namespace MAuth.Web.Services
         /// <param name="username">用户名</param>
         /// <param name="password">用户密码</param>
         /// <returns>JWT Token</returns>
-        Task<string> LoginAsync(string username, string password);
+        Task<AuthTokenDto> LoginAsync(string username, string password);
 
         /// <summary>
         /// 从用户信息创建用于认证的JWT字符串和用于刷新令牌的刷新token字符串
@@ -28,5 +29,12 @@ namespace MAuth.Web.Services
         /// <param name="token"></param>
         /// <returns>刷新完成的令牌</returns>
         Task<AuthTokenDto> RefreshAuthTokenAsync(AuthTokenDto token);
+
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<UserDto> GetUserInfoAsync(ClaimsPrincipal user);
     }
 }

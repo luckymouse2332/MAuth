@@ -1,23 +1,14 @@
 ﻿using MAuth.Web.Models.Responses;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MAuth.Web.Models.Exceptions
 {
     /// <summary>
     /// 自定义异常类
     /// </summary>
-    public class CustomException : Exception
+    public class CustomException(int code, string message) : Exception(message)
     {
-        public CustomException(ResponseStatus status) : base(status.Message)
-        {
-            StatusCode = status.Code;
-        }
-
-        public CustomException(int code, string message) : base(message)
-        {
-            StatusCode = code;
-        }
-
-        public int StatusCode { get; set; }
+        public int StatusCode { get; set; } = code;
 
         public override string ToString()
         {
@@ -26,6 +17,21 @@ namespace MAuth.Web.Models.Exceptions
 #else
             return Message;
 #endif
+        }
+
+        public static void ThrowIfNull([NotNull] object? argument, int statusCode)
+        {
+            if (argument is null) {
+                throw new CustomException(statusCode, $"Argument: {argument} can't be null!");
+            }
+        }
+
+        public static void ThrowIf(bool expression, int statusCode, string message)
+        {
+            if (expression)
+            {
+                throw new CustomException(statusCode, message);
+            }
         }
     }
 }

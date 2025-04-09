@@ -13,12 +13,16 @@ namespace MAuth.Web.Configurations
             builder.Property(x => x.Status)
                 .HasConversion(
                     v => v.ToString(),
-                    v => (UserStatus)Enum.Parse(typeof(UserStatus), v));
+                    v => Enum.Parse<UserStatus>(v));
 
             builder.Property(x => x.Role)
                 .HasConversion(
                     v => v.ToString(),
-                    v => (UserRole)Enum.Parse(typeof(UserRole), v));
+                    v => Enum.Parse<UserRole>(v));
+
+            builder.HasMany(x => x.Players)
+                .WithOne()
+                .HasForeignKey(x => x.UserId);
         }
     }
 }

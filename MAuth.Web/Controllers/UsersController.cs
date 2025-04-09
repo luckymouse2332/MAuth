@@ -4,6 +4,7 @@ using MAuth.Web.Data.Repositories;
 using MAuth.Web.Models.DTOs;
 using MAuth.Web.Models.Entities;
 using MAuth.Web.Models.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAuth.Web.Controllers
@@ -25,6 +26,7 @@ namespace MAuth.Web.Controllers
         /// </summary>
         /// <returns>用户列表</returns>
         [HttpGet]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUserListAsync()
         {
             var users = await _userRepository.GetAsync();
@@ -38,6 +40,7 @@ namespace MAuth.Web.Controllers
         /// <param name="id">用户ID</param>
         /// <returns>单个用户</returns>
         [HttpGet("{id:guid}", Name = nameof(GetUserByIdAsync))]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<UserDto>> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepository.GetByIdAsync(id);
@@ -51,6 +54,7 @@ namespace MAuth.Web.Controllers
         /// <param name="user">要添加的用户</param>
         /// <returns>添加后的用户</returns>
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult<UserDto>> CreateUserAsync(UserCreateDto user)
         {
             var userToAdd = _mapper.Map<User>(user);
@@ -72,6 +76,7 @@ namespace MAuth.Web.Controllers
         /// <param name="id">要更新的用户ID</param>
         /// <param name="user">要更新的目标</param>
         [HttpPut("{id:guid}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult> UpdateUserAsync(Guid id, [FromBody] UserUpdateDto user)
         {
             if (!await _userRepository.ExistsAsync(id))
@@ -95,6 +100,7 @@ namespace MAuth.Web.Controllers
         /// </summary>
         /// <param name="id">要删除的用户ID</param>
         [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult> DeleteUserAsync(Guid id)
         {
             if (!await _userRepository.ExistsAsync(id))
