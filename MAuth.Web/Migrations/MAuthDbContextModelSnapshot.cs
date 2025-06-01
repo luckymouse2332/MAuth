@@ -17,12 +17,12 @@ namespace MAuth.Web.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MAuth.Web.Models.Entities.PlayerEntity", b =>
+            modelBuilder.Entity("MAuth.Web.Data.Entities.Player", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,7 +66,7 @@ namespace MAuth.Web.Migrations
                     b.ToTable("players", (string)null);
                 });
 
-            modelBuilder.Entity("MAuth.Web.Models.Entities.User", b =>
+            modelBuilder.Entity("MAuth.Web.Data.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,16 +110,16 @@ namespace MAuth.Web.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("MAuth.Web.Models.Entities.PlayerEntity", b =>
+            modelBuilder.Entity("MAuth.Web.Data.Entities.Player", b =>
                 {
-                    b.HasOne("MAuth.Web.Models.Entities.User", null)
+                    b.HasOne("MAuth.Web.Data.Entities.User", null)
                         .WithMany("Players")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MAuth.Web.Models.Entities.User", b =>
+            modelBuilder.Entity("MAuth.Web.Data.Entities.User", b =>
                 {
                     b.Navigation("Players");
                 });

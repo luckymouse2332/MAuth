@@ -1,13 +1,16 @@
-﻿using MAuth.Web.Configurations;
-using MAuth.Web.Models.Entities;
+﻿using MAuth.Web.Data.Configurations;
+using MAuth.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace MAuth.Web.Data
 {
-    public class MAuthDbContext(DbContextOptions<MAuthDbContext> options) : DbContext(options)
+    public class MAuthDbContext(DbContextOptions<MAuthDbContext> options) 
+        : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Player> Players { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

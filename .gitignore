@@ -57,3 +57,7 @@ nunit-*.xml
 
 # Migrations
 Migrations/
+
+appsetttings.Development.json
+
+.idea
