@@ -32,4 +32,8 @@
 		<ProjectReference Include="..\MAuth.Generator\MAuth.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
+	<Target Name="MakeMyDir" AfterTargets="Build">
+		<MakeDir Directories="$(OutDir)LogFiles" />
+	</Target>
+
 </Project>

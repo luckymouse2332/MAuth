@@ -1,5 +1,4 @@
 ﻿using Mapster;
-using MAuth.Contracts.Enums;
 using MAuth.Web.Commons.Helpers;
 using MAuth.Web.Controllers.Users.DTOs;
 using MAuth.Web.Controllers.Users.Requests;

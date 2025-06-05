@@ -1,5 +1,4 @@
-﻿using MAuth.Contracts.Enums;
-using MAuth.Web.Commons.Helpers;
+﻿using MAuth.Web.Commons.Helpers;
 using MAuth.Web.Commons.Models;
 using MAuth.Web.Controllers.Players.Parameters;
 using MAuth.Web.Data;
@@ -10,7 +9,7 @@ namespace MAuth.Web.Services.Players;
 
 public class PlayerRepository(MAuthDbContext dbContext) : IPlayerRepository
 {
-    private readonly MAuthDbContext _dbContext = dbContext;
+    private readonly MAuthDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
     public async Task<int> SaveChangesAsync() => await _dbContext.SaveChangesAsync();
 

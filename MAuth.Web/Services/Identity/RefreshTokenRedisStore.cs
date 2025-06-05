@@ -4,7 +4,7 @@ namespace MAuth.Web.Services.Identity
 {
     public class RefreshTokenRedisStore(IDistributedCache distributedCache) : ITokenStore
     {
-        private readonly IDistributedCache _distributedCache = distributedCache;
+        private readonly IDistributedCache _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
 
         public async Task SaveTokenAsync(string key, string token, TimeSpan expiration)
         {

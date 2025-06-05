@@ -12,24 +12,25 @@ namespace MAuth.Web.Controllers.Users;
 /// <summary>
 /// 身份认证控制器
 /// </summary>
-/// <param name="identityService"></param>
 [Route("api/auth")]
 [ApiController]
 public class UserController(IIdentityService identityService, IUserRepository userRepository) : ControllerBase
 {
-    private readonly IIdentityService _identityService = identityService;
+    private readonly IIdentityService _identityService =
+        identityService ?? throw new ArgumentNullException(nameof(identityService));
 
-    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IUserRepository _userRepository =
+        userRepository ?? throw new ArgumentNullException(nameof(userRepository));
 
     /// <summary>
     /// 登录
     /// </summary>
-    /// <param name="loginDto"></param>
+    /// <param name="loginRequest"></param>
     /// <returns></returns>
     [HttpPost("login")]
-    public async Task<ActionResult<AuthTokenDto>> Login(UserLoginRequest loginDto)
+    public async Task<ActionResult<AuthTokenDto>> Login(UserLoginRequest loginRequest)
     {
-        var result = await _identityService.VerifyLoginDataAsync(loginDto.Username, loginDto.Password);
+        var result = await _identityService.VerifyLoginDataAsync(loginRequest.Username, loginRequest.Password);
         if (!result.IsSuccessful)
         {
             return result.Error switch

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MAuth.Contracts.Enums;
+namespace MAuth.Web.Commons.Validators;
 
 public class EnumValueValidationAttribute : ValidationAttribute
 {
@@ -22,13 +22,11 @@ public class EnumValueValidationAttribute : ValidationAttribute
         var input = value.ToString();
         var displayName = validationContext.DisplayName;
 
-        if (!Enum.TryParse(_enumType, input, ignoreCase: true, out var result) 
-            || !Enum.IsDefined(_enumType, result))
-        {
-            var validNames = string.Join("、", Enum.GetNames(_enumType));
-            return new ValidationResult($"{displayName}的值必须为：{validNames}");
-        }
+        if (Enum.TryParse(_enumType, input, ignoreCase: true, out var result)
+            && Enum.IsDefined(_enumType, result)) return ValidationResult.Success;
+        
+        var validNames = string.Join("、", Enum.GetNames(_enumType));
+        return new ValidationResult($"{displayName}的值必须为：{validNames}");
 
-        return ValidationResult.Success;
     }
 }

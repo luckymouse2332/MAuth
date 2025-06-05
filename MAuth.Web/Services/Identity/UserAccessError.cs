@@ -6,11 +6,6 @@
 public enum UserAccessError
 {
     /// <summary>
-    /// 成功
-    /// </summary>
-    Success,
-
-    /// <summary>
     /// 用户不存在
     /// </summary>
     UserNotExists,
@@ -28,10 +23,5 @@ public enum UserAccessError
     /// <summary>
     /// 刷新令牌无效
     /// </summary>
-    InvalidRefreshToken,
-
-    /// <summary>
-    /// 未知错误
-    /// </summary>
-    UnknownError,
+    InvalidRefreshToken
 }

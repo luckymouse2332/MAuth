@@ -1,5 +1,4 @@
-﻿using MAuth.Web.Data.Configurations;
-using MAuth.Web.Data.Entities;
+﻿using MAuth.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -37,10 +36,13 @@ namespace MAuth.Web.Data
             return Expression.Lambda(condition, param);
         }
 
+        /// <summary>
+        /// 不使用同步方法
+        /// </summary>
         public override int SaveChanges()
         {
-            HandleEntityChanges();
-            return base.SaveChanges();
+            // 禁用同步方法
+            throw new NotImplementedException();
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

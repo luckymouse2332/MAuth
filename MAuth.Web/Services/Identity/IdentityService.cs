@@ -8,32 +8,35 @@ using MAuth.Web.Commons.Helpers;
 using MAuth.Web.Data.Entities;
 using MAuth.Web.Services.Users;
 using DotNext;
+using MAuth.Web.Commons.Options;
 
 namespace MAuth.Web.Services.Identity;
 
 public class IdentityService(
     IUserRepository userRepository,
-    IOptionsSnapshot<JwtOptions> jwtOptions, 
+    IOptionsSnapshot<JwtOptions> jwtOptions,
     SigningCredentials signingCredentials,
     IOptionsSnapshot<JwtBearerOptions> namedAuthOptions,
     ITokenStore tokenStore) : IIdentityService
 {
-    private readonly IUserRepository _userRepository = userRepository;
-
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
-
-    private readonly SigningCredentials _signingCredentials = signingCredentials;
 
     private readonly JwtBearerOptions _jwtBearerOptions = namedAuthOptions.Get(
         JwtBearerDefaults.AuthenticationScheme);
 
-    private readonly ITokenStore _tokenStore = tokenStore;
+    private readonly IUserRepository _userRepository =
+        userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+
+    private readonly SigningCredentials _signingCredentials =
+        signingCredentials ?? throw new ArgumentNullException(nameof(signingCredentials));
+
+    private readonly ITokenStore _tokenStore = tokenStore ?? throw new ArgumentNullException(nameof(tokenStore));
 
     public async Task<Result<User, UserAccessError>> VerifyLoginDataAsync(string username, string password)
     {
         ArgumentNullException.ThrowIfNull(username);
         ArgumentNullException.ThrowIfNull(password);
-        
+
         var user = await _userRepository.GetUserByUsernameAsync(username);
 
         if (user is null)
@@ -61,14 +64,14 @@ public class IdentityService(
         // 使用字典式查找，提高性能（大约比 FirstOrDefault 快 20~40%，尤其是在 Claim 多时）
         var claims = result.ClaimsIdentity.Claims.ToDictionary(c => c.Type, c => c.Value);
 
-        if (!claims.TryGetValue(JwtOptions.UserIdClaimType, out var userId)
+        if (!claims.TryGetValue(ClaimTypes.NameIdentifier, out var userId)
             || !Guid.TryParse(userId, out var id))
             return new(UserAccessError.InvalidAccessToken);
 
         if (!claims.TryGetValue(ClaimTypes.Role, out var userRole))
             return new(UserAccessError.InvalidAccessToken);
 
-        if (!claims.TryGetValue(JwtOptions.RefreshTokenIdClaimType, out var refreshTokenId))
+        if (!claims.TryGetValue(JwtOptions.RefreshTokenId, out var refreshTokenId))
             return new(UserAccessError.InvalidRefreshToken);
 
         var tokenKey = IdentityHelper.GetRefreshTokenKey(userId, refreshTokenId);
@@ -100,9 +103,9 @@ public class IdentityService(
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([
-                new (ClaimTypes.Role, user.Role.ToString()),
-                new (JwtOptions.RefreshTokenIdClaimType, refreshTokenId),
-                new (JwtOptions.UserIdClaimType, user.Id.ToString())
+                new(ClaimTypes.Role, user.Role.ToString()),
+                new(JwtOptions.RefreshTokenId, refreshTokenId),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString())
             ]),
             Issuer = _jwtOptions.Issuer,
             IssuedAt = DateTime.UtcNow,

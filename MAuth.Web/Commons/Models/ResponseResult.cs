@@ -1,31 +1,27 @@
-﻿namespace MAuth.Web.Commons.Models
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace MAuth.Web.Commons.Models;
+
+public class ResponseResult : ObjectResult
 {
-    [Serializable]
-    public class ResponseResult<TData>(int code, string message, TData data) : ResponseResult(code, message)
+    public ResponseResult(int code, string message = "成功！", object? data = null)
+        : base(new { Status = code, Message = message, Data = data })
     {
-        public TData? Data { get; set; } = data;
+        StatusCode = code;
     }
 
-    [Serializable]
-    public class ResponseResult(int code, string message)
-    {
-        public int Status { get; set; } = code;
+    public static ResponseResult Success(string message = "成功！") =>
+        new(StatusCodes.Status200OK, message);
 
-        public string Message { get; set; } = message;
+    public static ResponseResult Success(object? data, string message = "成功！") =>
+        new(StatusCodes.Status200OK, message, data);
 
-        public static ResponseResult Success(string message = "成功！") =>
-            new(200, message);
+    public static ResponseResult Fail(int code, string message = "失败！") =>
+        new(code, message);
 
-        public static ResponseResult<T> Success<T>(T data, string message = "成功！") =>
-            new(200, message, data);
+    public static ResponseResult Fail(object data, int code, string message = "失败！") =>
+        new(code, message, data);
 
-        public static ResponseResult Fail(int code, string message = "失败！") =>
-            new(code, message);
-
-        public static ResponseResult<T> Fail<T>(T data, int code, string message = "失败！") =>
-            new(code, message, data);
-
-        public static ResponseResult Error(string message = "错误！") =>
-            new(500, message);
-    }
+    public static ResponseResult Error(string message = "错误！") =>
+        new(StatusCodes.Status500InternalServerError, message);
 }

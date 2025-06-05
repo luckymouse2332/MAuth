@@ -1,5 +1,4 @@
-﻿using MAuth.Contracts.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MAuth.Web.Data.Entities
 {

@@ -1,6 +1,6 @@
-﻿using MAuth.Contracts.Enums;
-using MAuth.Web.Controllers.Players.Requests;
+﻿using MAuth.Web.Controllers.Players.Requests;
 using System.ComponentModel.DataAnnotations;
+using MAuth.Web.Data.Entities;
 
 namespace MAuth.Web.Controllers.Users.Requests;
 

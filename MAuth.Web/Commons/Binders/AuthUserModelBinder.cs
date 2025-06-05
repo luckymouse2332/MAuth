@@ -1,5 +1,4 @@
 ﻿using MAuth.Web.Commons.Helpers;
-using MAuth.Web.Services.Identity;
 using MAuth.Web.Services.Users;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -9,7 +8,7 @@ namespace MAuth.Web.Commons.Binders
 {
     public class AuthUserModelBinder(IUserRepository userRepository) : IModelBinder
     {
-        private readonly IUserRepository userRepository = userRepository 
+        private readonly IUserRepository _userRepository = userRepository 
             ?? throw new ArgumentNullException(nameof(userRepository));
 
         public async Task BindModelAsync(ModelBindingContext context)
@@ -37,7 +36,7 @@ namespace MAuth.Web.Commons.Binders
             var id = IdentityHelper.GetUserIdFromPrincipal(context.HttpContext.User);
 
             var user = id.HasValue
-                ? await userRepository.GetUserByIdAsync(id.Value)
+                ? await _userRepository.GetUserByIdAsync(id.Value)
                 : null;
 
             var value = string.IsNullOrEmpty(attr.Property)

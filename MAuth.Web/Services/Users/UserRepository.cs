@@ -1,5 +1,4 @@
-﻿using MAuth.Contracts.Enums;
-using MAuth.Web.Commons.Helpers;
+﻿using MAuth.Web.Commons.Helpers;
 using MAuth.Web.Commons.Models;
 using MAuth.Web.Controllers.Users.Parameters;
 using MAuth.Web.Data;
@@ -10,11 +9,11 @@ namespace MAuth.Web.Services.Users;
 
 public class UserRepository(MAuthDbContext dbContext) : IUserRepository
 {
-    private readonly MAuthDbContext _dbContext = dbContext;
+    private readonly MAuthDbContext _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
 
     public async Task<int> SaveChangesAsync() => await _dbContext.SaveChangesAsync();
 
-    public async Task<ICollection<User>> GetUserListAsync(UserQueryParameters parameter)
+    public async Task<PagedList<User>> GetUserListAsync(UserQueryParameters parameter)
     {
         var query = _dbContext.Users
             .AsNoTracking()

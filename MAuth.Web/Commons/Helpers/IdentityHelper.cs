@@ -1,9 +1,6 @@
-﻿using MAuth.Web.Services.Identity;
-using Microsoft.IdentityModel.Tokens;
-using Serilog;
+﻿using MAuth.Web.Commons.Options;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text.Json;
 
 namespace MAuth.Web.Commons.Helpers;
 
@@ -50,7 +47,7 @@ public static class IdentityHelper
     {
         ArgumentNullException.ThrowIfNull(user, nameof(user));
 
-        var userIdClaim = user.Claims.FirstOrDefault(c => c.Type == JwtOptions.UserIdClaimType)
+        var userIdClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
             ?? throw new InvalidOperationException("User ID claim not found.");
 
         if (!Guid.TryParse(userIdClaim.Value, out var userId))
@@ -60,68 +57,4 @@ public static class IdentityHelper
 
         return userId;
     }
-
-    /// <summary>
-    /// 生成用于JWT非对称加密的公钥和私钥
-    /// </summary>
-    private static void GenerateKeys()
-    {
-        using var rsa = new RSACryptoServiceProvider(2048);
-
-        var privateKey = rsa.ExportParameters(true);
-
-        var publicKey = rsa.ExportParameters(false);
-
-        if (!Directory.Exists(Dir))
-        {
-            Directory.CreateDirectory(Dir);
-            Log.Information("Created a new directory to save keys: {0}", Dir);
-        }
-
-        File.WriteAllText(PrivateKeyPath, JsonSerializer.Serialize(privateKey, options));
-
-        File.WriteAllText(PublicKeyPath, JsonSerializer.Serialize(publicKey, options));
-
-        Log.Information("Keys are created successfully!");
-
-        // 及时销毁，以免出现密钥泄露问题
-        rsa.PersistKeyInCsp = false;
-    }
-
-    /// <summary>
-    /// 获取用于JWT非对称加密的私钥和公钥。
-    /// </summary>
-    /// <returns></returns>
-    public static (RsaSecurityKey privateKey, RsaSecurityKey publicKey)
-        GetPrivateKeyAndPublicKey()
-    {
-        if (!File.Exists(PrivateKeyPath)
-            || !Path.Exists(PublicKeyPath)) // 判断是否需要重新生成密钥文件
-        {
-            GenerateKeys();
-        }
-
-        var privateKeyString = File.ReadAllText(PrivateKeyPath);
-        var publicKeyString = File.ReadAllText(PublicKeyPath);
-
-        var rsaSecurityPrivateKey = new RsaSecurityKey(JsonSerializer.Deserialize<RSAParameters>(privateKeyString, options));
-
-        var rsaSecurityPublicKey = new RsaSecurityKey(JsonSerializer.Deserialize<RSAParameters>(publicKeyString, options));
-
-        return (rsaSecurityPrivateKey, rsaSecurityPublicKey);
-    }
-
-    private static string Dir =>
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Rsa");
-
-    private static string PrivateKeyPath =>
-        Path.Combine(Dir, "key.private.json");
-
-    private static string PublicKeyPath =>
-        Path.Combine(Dir, "key.public.json");
-
-    private static JsonSerializerOptions options = new()
-    {
-        IncludeFields = true
-    };
 }

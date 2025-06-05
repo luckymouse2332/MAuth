@@ -6,17 +6,20 @@ using MAuth.Web.Commons.Binders;
 using Mapster;
 using MAuth.Web.Data.Entities;
 using MapsterMapper;
+using MAuth.Web.Services.Identity;
 using MAuth.Web.Services.Players;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MAuth.Web.Controllers.Players;
 
 [Route("api/users/{userId:guid}/players")]
 [ApiController]
+[Authorize(Policy = AuthorizationPolicyNames.CurrentUserOnly)]
 public class PlayersController(IPlayerRepository playerRepository, IUserRepository userRepository, IMapper mapper) : ControllerBase
 {
-    private readonly IUserRepository _userRepository = userRepository;
-
-    private readonly IPlayerRepository _playerRepository = playerRepository;
+    private readonly IPlayerRepository _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+    private readonly IUserRepository _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+    private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 
     [HttpGet]
     public async Task<ActionResult<ICollection<PlayerDto>>> GetPlayersForUser(Guid userId)
@@ -71,7 +74,7 @@ public class PlayersController(IPlayerRepository playerRepository, IUserReposito
             return NotFound("玩家不存在！");
         }
 
-        mapper.Map(dto, player);
+        _mapper.Map(dto, player);
 
         player.Modifier = modifier;
 

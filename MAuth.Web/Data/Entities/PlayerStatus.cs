@@ -1,9 +1,8 @@
-﻿namespace MAuth.Contracts.Enums
+﻿namespace MAuth.Web.Data.Entities;
+
+public enum PlayerStatus
 {
-    public enum PlayerStatus
-    {
-        Online,
-        Offline,
-        Banned
-    }
+    Online,
+    Offline,
+    Banned
 }
