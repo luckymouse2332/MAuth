@@ -58,6 +58,6 @@ nunit-*.xml
 # Migrations
 Migrations/
 
-MAuth.Web/appsetttings.Development.json
+appsetttings.Development.json
 
 .idea

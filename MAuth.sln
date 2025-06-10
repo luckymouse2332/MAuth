@@ -3,12 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAuth.Web", "MAuth.Web\MAuth.Web.csproj", "{80C96D4D-5AB7-47D3-A08D-5685507799CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MAuth.WebAPI", "MAuth.WebAPI\MAuth.WebAPI.csproj", "{80C96D4D-5AB7-47D3-A08D-5685507799CF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{9FA3D6BD-1EC1-3BA5-80CB-CE02773A58D5}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAuth.Data", "MAuth.Data\MAuth.Data.csproj", "{65201035-A192-4DBE-AC6C-3590CD418B53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{80C96D4D-5AB7-47D3-A08D-5685507799CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80C96D4D-5AB7-47D3-A08D-5685507799CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80C96D4D-5AB7-47D3-A08D-5685507799CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65201035-A192-4DBE-AC6C-3590CD418B53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65201035-A192-4DBE-AC6C-3590CD418B53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65201035-A192-4DBE-AC6C-3590CD418B53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65201035-A192-4DBE-AC6C-3590CD418B53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
